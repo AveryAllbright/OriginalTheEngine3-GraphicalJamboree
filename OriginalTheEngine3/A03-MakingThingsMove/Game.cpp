@@ -193,6 +193,16 @@ void Game::CreateBasicGeometry()
 
 	Octogon = new Mesh(OctVerts, 9, OctIndices, 24, device);
 
+	XMFLOAT3 standRot = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 standScale = XMFLOAT3(1, 1, 1);
+
+	Entities.push_back(Entity(Triangle, worldMatrix, XMFLOAT3(0, 0, 1), standRot, standScale));
+	Entities.push_back(Entity(Square, worldMatrix, XMFLOAT3(1, 1, -4), standRot, standScale));
+
+	for (UINT i = 0; i < 5; i++)
+	{
+		Entities.push_back(Entity(Octogon, worldMatrix, XMFLOAT3(i, -i, 0), standRot, XMFLOAT3(.5f, .5f, .5f)));
+	}
 }
 
 // --------------------------------------------------------
@@ -271,40 +281,22 @@ void Game::Draw(float deltaTime, float totalTime)
 
 	//Draw Mesh : Triangle
 
-	ID3D11Buffer* vert = Triangle->GetVertexBuffer();
-		
-	context->IASetVertexBuffers(0, 1, &vert, &stride, &offset);
-	context->IASetIndexBuffer(Triangle->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+	ID3D11Buffer* vert;
 
-	context->DrawIndexed(
-		Triangle->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-		0,     // Offset to the first index we want to use
-		0);    // Offset to add to each index when looking up vertices
-		
-	//Draw Mesh : Square
-	vert = Square->GetVertexBuffer();
+	for (UINT i = 0; i < Entities.size(); i++)
+	{
 
-	context->IASetVertexBuffers(0, 1, &vert, &stride, &offset);
-	context->IASetIndexBuffer(Square->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+		vert = Entities[i].GetMesh()->GetVertexBuffer();
 
-	context->DrawIndexed(
-		Square->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-		0,     // Offset to the first index we want to use
-		0);    // Offset to add to each index when looking up vertices
+		context->IASetVertexBuffers(0, 1, &vert, &stride, &offset);
+		context->IASetIndexBuffer(Entities[i].GetMesh()->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 
-	//Draw Mesh : Octogon
-
-	vert = Octogon->GetVertexBuffer();
-
-	context->IASetVertexBuffers(0, 1, &vert, &stride, &offset);
-	context->IASetIndexBuffer(Octogon->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-
-	context->DrawIndexed(
-		Octogon->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
-		0,     // Offset to the first index we want to use
-		0);    // Offset to add to each index when looking up vertices
-
-
+		context->DrawIndexed(
+			Entities[i].GetMesh()->GetIndexCount(),     // The number of indices to use (we could draw a subset if we wanted)
+			0,     // Offset to the first index we want to use
+			0);    // Offset to add to each index when looking up vertices
+	}
+	
 	// Present the back buffer to the user
 	//  - Puts the final frame we're drawing into the window so the user can see it
 	//  - Do this exactly ONCE PER FRAME (always at the very end of the frame)
