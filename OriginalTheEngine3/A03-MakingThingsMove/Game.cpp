@@ -196,12 +196,12 @@ void Game::CreateBasicGeometry()
 	XMFLOAT3 standRot = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 standScale = XMFLOAT3(1, 1, 1);
 
-	Entities.push_back(Entity(Triangle, worldMatrix, XMFLOAT3(0, 0, 1), standRot, standScale));
-	Entities.push_back(Entity(Square, worldMatrix, XMFLOAT3(1, 1, -4), standRot, standScale));
+	Entities.push_back(Entity(Triangle, worldMatrix, XMFLOAT3(0, 0, 0), standRot, standScale));
+	Entities.push_back(Entity(Square, worldMatrix, XMFLOAT3(0,0,0), standRot, standScale));
 
-	for (UINT i = 0; i < 5; i++)
+	for (UINT i = 0; i < 3; i++)
 	{
-		Entities.push_back(Entity(Octogon, worldMatrix, XMFLOAT3(i, -i, 0), standRot, XMFLOAT3(.5f, .5f, .5f)));
+		Entities.push_back(Entity(Octogon, worldMatrix, XMFLOAT3(0,0,0), standRot, XMFLOAT3(.5f, .5f, .5f)));
 	}
 }
 
@@ -231,6 +231,17 @@ void Game::Update(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
+	
+	Entities[0].Move(XMFLOAT3(sin(deltaTime), 0, 0));
+	Entities[1].Move(XMFLOAT3(0, sin(deltaTime), 0));
+	Entities[2].Move(XMFLOAT3(0, 0, sin(deltaTime)));
+	Entities[3].RotateBy(XMFLOAT3(sin(deltaTime), 0, 0));
+	Entities[4].Move(XMFLOAT3(sin(deltaTime), 0, 0));
+
+	for (int i = 0; i < 5; i++)
+	{
+		Entities[i].UpdateWorldView();
+	}	
 }
 
 // --------------------------------------------------------
@@ -251,40 +262,37 @@ void Game::Draw(float deltaTime, float totalTime)
 		1.0f,
 		0);
 
-	// Send data to shader variables
-	//  - Do this ONCE PER OBJECT you're drawing
-	//  - This is actually a complex process of copying data to a local buffer
-	//    and then copying that entire buffer to the GPU.  
-	//  - The "SimpleShader" class handles all of that for you.
-	vertexShader->SetMatrix4x4("world", worldMatrix);
-	vertexShader->SetMatrix4x4("view", viewMatrix);
-	vertexShader->SetMatrix4x4("projection", projectionMatrix);
-
-	// Once you've set all of the data you care to change for
-	// the next draw call, you need to actually send it to the GPU
-	//  - If you skip this, the "SetMatrix" calls above won't make it to the GPU!
-	vertexShader->CopyAllBufferData();
-
-	// Set the vertex and pixel shaders to use for the next Draw() command
-	//  - These don't technically need to be set every frame...YET
-	//  - Once you start applying different shaders to different objects,
-	//    you'll need to swap the current shaders before each draw
-	vertexShader->SetShader();
-	pixelShader->SetShader();
-
-	// Set buffers in the input assembler
-	//  - Do this ONCE PER OBJECT you're drawing, since each object might
-	//    have different geometry.
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-
-
-	//Draw Mesh : Triangle
-
 	ID3D11Buffer* vert;
 
 	for (UINT i = 0; i < Entities.size(); i++)
 	{
+
+		// Send data to shader variables
+		//  - Do this ONCE PER OBJECT you're drawing
+		//  - This is actually a complex process of copying data to a local buffer
+		//    and then copying that entire buffer to the GPU.  
+		//  - The "SimpleShader" class handles all of that for you.
+		vertexShader->SetMatrix4x4("world", Entities[i].GetWorld());
+		vertexShader->SetMatrix4x4("view", viewMatrix);
+		vertexShader->SetMatrix4x4("projection", projectionMatrix);
+
+		// Once you've set all of the data you care to change for
+		// the next draw call, you need to actually send it to the GPU
+		//  - If you skip this, the "SetMatrix" calls above won't make it to the GPU!
+		vertexShader->CopyAllBufferData();
+
+		// Set the vertex and pixel shaders to use for the next Draw() command
+		//  - These don't technically need to be set every frame...YET
+		//  - Once you start applying different shaders to different objects,
+		//    you'll need to swap the current shaders before each draw
+		vertexShader->SetShader();
+		pixelShader->SetShader();
+
+		// Set buffers in the input assembler
+		//  - Do this ONCE PER OBJECT you're drawing, since each object might
+		//    have different geometry.
+		UINT stride = sizeof(Vertex);
+		UINT offset = 0;
 
 		vert = Entities[i].GetMesh()->GetVertexBuffer();
 

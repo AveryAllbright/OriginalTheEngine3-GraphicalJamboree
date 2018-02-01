@@ -39,6 +39,9 @@ public:
 	void MoveForward(float a_fDisplaceBy);
 
 	void Draw();
+	void UpdateWorldView();
+	void RotateBy(DirectX::XMFLOAT3 a_vRotation);
+	void ScaleBy(DirectX::XMFLOAT3 a_vScale);
 
 	virtual ~Entity();
 };
