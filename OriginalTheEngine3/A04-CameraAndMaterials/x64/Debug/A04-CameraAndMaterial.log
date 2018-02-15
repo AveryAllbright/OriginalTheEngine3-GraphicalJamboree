@@ -1,0 +1,14 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (A01-Mesh.vcxproj, A03-MakingThingsMove.vcxproj, DX11Starter.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  compilation object save succeeded; see M:\School\GGP\OtE3\OriginalTheEngine3\x64\Debug\PixelShader.cso
+  compilation object save succeeded; see M:\School\GGP\OtE3\OriginalTheEngine3\x64\Debug\VertexShader.cso
+  SimpleShader.cpp
+  Mesh.cpp
+  Material.cpp
+  Main.cpp
+  Game.cpp
+  Entity.cpp
+  DXCore.cpp
+  Camera.cpp
+m:\school\ggp\ote3\originaltheengine3\a04-cameraandmaterials\camera.cpp(75): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+  A04-CameraAndMaterial.vcxproj -> M:\School\GGP\OtE3\OriginalTheEngine3\x64\Debug\A04-CameraAndMaterial.exe

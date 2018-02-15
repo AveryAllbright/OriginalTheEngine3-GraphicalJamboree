@@ -1,3 +1,10 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (DX11Starter.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  compilation object save succeeded; see M:\School\GGP\OtE3\OriginalTheEngine3\x64\Debug\PixelShader.cso
+  compilation object save succeeded; see M:\School\GGP\OtE3\OriginalTheEngine3\x64\Debug\VertexShader.cso
+  SimpleShader.cpp
+  Mesh.cpp
+  Main.cpp
   Game.cpp
-  A01-Mesh.vcxproj -> M:\School\GGP\OriginalTheEngine3 - Graphical Jamboree\x64\Debug\A01-Mesh.exe
+  DXCore.cpp
+  Generating Code...
+  A01-Mesh.vcxproj -> M:\School\GGP\OtE3\OriginalTheEngine3\x64\Debug\A01-Mesh.exe

@@ -16,8 +16,8 @@ Game::Game(HINSTANCE hInstance)
 	: DXCore(
 		hInstance,		   // The application's handle
 		"DirectX Game",	   // Text for the window's title bar
-		1280,			   // Width of the window's client area
-		720,			   // Height of the window's client area
+		1920,			   // Width of the window's client area
+		1080,			   // Height of the window's client area
 		true)			   // Show extra stats (fps) in title bar?
 {
 	// Initialize fields
@@ -28,6 +28,7 @@ Game::Game(HINSTANCE hInstance)
 	// Do we want a console window?  Probably only in debug mode
 	CreateConsoleWindow(500, 120, 32, 120);
 	printf("Console window created successfully.  Feel free to printf() here.");
+	
 #endif
 	
 }
@@ -43,9 +44,9 @@ Game::~Game()
 	// will clean up their own internal DirectX stuff
 	delete vertexShader;
 	delete pixelShader;
-	delete Triangle;
-	delete Square;
-	delete Octogon;
+	delete Hexlis;
+	delete baseMat;
+	
 }
 
 // --------------------------------------------------------
@@ -60,6 +61,14 @@ void Game::Init()
 	LoadShaders();
 	CreateMatrices();
 	CreateBasicGeometry();
+
+	DirLight.AmbientColour = XMFLOAT4(.1f, .1f, .1f, 1.f);
+	DirLight.DiffuseColour = XMFLOAT4(0.f, 0.1f, 0.1f, 1.f);
+	DirLight.Direction = XMFLOAT3(1.f, -1.f, 0.f);
+
+	TopLight.AmbientColour = XMFLOAT4(.1f, .1f, .1f, .1f);
+	TopLight.DiffuseColour = XMFLOAT4(0.1f, 0.1f, 1.0f, 1.f);
+	TopLight.Direction = XMFLOAT3(0.f, 2.f, 0.f);
 
 	// Tell the input assembler stage of the pipeline what kind of
 	// geometric primitives (points, lines or triangles) we want to draw.  
@@ -113,15 +122,8 @@ void Game::CreateMatrices()
 		up);     // "Up" direction in 3D space (prevents roll)
 	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V)); // Transpose for HLSL!
 
-	// Create the Projection matrix
-	// - This should match the window's aspect ratio, and also update anytime
-	//    the window resizes (which is already happening in OnResize() below)
-	XMMATRIX P = XMMatrixPerspectiveFovLH(
-		0.25f * 3.1415926535f,		// Field of View Angle
-		(float)width / height,		// Aspect ratio
-		0.1f,						// Near clip plane distance
-		100.0f);					// Far clip plane distance
-	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+	Cam.SetProjection(height, width);
+	SetCursorPos(width / 2, height / 2);
 }
 
 // --------------------------------------------------------
@@ -129,80 +131,15 @@ void Game::CreateMatrices()
 // --------------------------------------------------------
 void Game::CreateBasicGeometry()
 {
-
-	//Triangle Geometry!
-	
-	XMFLOAT4 red = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	XMFLOAT4 green = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-	XMFLOAT4 blue = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-		
-	Vertex vertices[] =
-	{
-		{ XMFLOAT3(-3.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(-1.f, -1.0f, +0.0f), blue },
-		{ XMFLOAT3(-3.f, -1.0f, +0.0f), green },
-	};
-		
-	int indices[] = { 0, 1, 2 };
-	
-	Triangle = new Mesh(vertices, 3, indices, 3, device);
-
-	//Square Geometry!
-	Vertex squareVerts[] = 
-	{
-		{ XMFLOAT3(1.50f, .0f, .0f), red },
-		{ XMFLOAT3(2.5f, .0f, +0.0f), blue },
-		{ XMFLOAT3(+2.5f, -1.0f, +0.0f), green },
-		{ XMFLOAT3(1.5f, -1.0f, +0.0f), blue },
-	};
-
-	int squareIndices[] = { 0, 1, 2, 0, 2, 3 };
-
-	Square = new Mesh(squareVerts, 4, squareIndices, 6, device);
-
-	//Eight Awesome Angles
-
-	Vertex OctVerts[]
-	{
-		{XMFLOAT3(0.f, 0.f, 0.f), red},
-
-		{ XMFLOAT3(0.f, 1.f, 0.f), blue },
-		{ XMFLOAT3(.7f, .7f, 0.f), green },
-
-		{ XMFLOAT3(1.f, 0.f, 0.f), red },
-		{ XMFLOAT3(.7f, -.7f, 0.f), blue },
-
-		{ XMFLOAT3(0.f, -1.f, 0.f), green },
-		{ XMFLOAT3(-.7f, -.7f, 0.f), red },
-
-		{ XMFLOAT3(-1.f, 0.f, 0.f), blue },
-		{ XMFLOAT3(-.7f, .7f, 0.f), green },
-	};
-
-	int OctIndices[] = 
-	{ 
-		0, 1, 2,
-		0, 2, 3,
-		0, 3, 4, 
-		0, 4, 5, 
-		0, 5, 6, 
-		0, 6, 7, 
-		0, 7, 8, 
-		0, 8, 1 
-	};
-
-	Octogon = new Mesh(OctVerts, 9, OctIndices, 24, device);
-
 	XMFLOAT3 standRot = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 standScale = XMFLOAT3(1, 1, 1);
 
-	Entities.push_back(Entity(Triangle, worldMatrix, XMFLOAT3(0, 0, 0), standRot, standScale));
-	Entities.push_back(Entity(Square, worldMatrix, XMFLOAT3(0,0,0), standRot, standScale));
+	baseMat = new Material(vertexShader, pixelShader);
 
-	for (UINT i = 0; i < 3; i++)
-	{
-		Entities.push_back(Entity(Octogon, worldMatrix, XMFLOAT3(0,0,0), standRot, XMFLOAT3(.5f, .5f, .5f)));
-	}
+	Hexlis = new Mesh("Models//sphere.obj", device);
+
+	Entities.push_back(Entity(Hexlis, baseMat, worldMatrix, XMFLOAT3(0, 0, 0), standRot, standScale));
+	
 }
 
 // --------------------------------------------------------
@@ -215,12 +152,8 @@ void Game::OnResize()
 	DXCore::OnResize();
 
 	// Update our projection matrix since the window size changed
-	XMMATRIX P = XMMatrixPerspectiveFovLH(
-		0.25f * 3.1415926535f,	// Field of View Angle
-		(float)width / height,	// Aspect ratio
-		0.1f,				  	// Near clip plane distance
-		100.0f);			  	// Far clip plane distance
-	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P)); // Transpose for HLSL!
+	Cam.SetProjection(height, width);
+	SetCursorPos(width / 2, height / 2);
 }
 
 // --------------------------------------------------------
@@ -231,17 +164,10 @@ void Game::Update(float deltaTime, float totalTime)
 	// Quit if the escape key is pressed
 	if (GetAsyncKeyState(VK_ESCAPE))
 		Quit();
-	
-	Entities[0].Move(XMFLOAT3(sin(deltaTime), 0, 0));
-	Entities[1].Move(XMFLOAT3(0, sin(deltaTime), 0));
-	Entities[2].Move(XMFLOAT3(0, 0, sin(deltaTime)));
-	Entities[3].RotateBy(XMFLOAT3(sin(deltaTime), 0, 0));
-	Entities[4].Move(XMFLOAT3(sin(deltaTime), 0, 0));
 
-	for (int i = 0; i < 5; i++)
-	{
-		Entities[i].UpdateWorldView();
-	}	
+
+	Cam.Update(deltaTime);
+	Cam.Rotate(0, 0, width, height);
 }
 
 // --------------------------------------------------------
@@ -267,26 +193,12 @@ void Game::Draw(float deltaTime, float totalTime)
 	for (UINT i = 0; i < Entities.size(); i++)
 	{
 
-		// Send data to shader variables
-		//  - Do this ONCE PER OBJECT you're drawing
-		//  - This is actually a complex process of copying data to a local buffer
-		//    and then copying that entire buffer to the GPU.  
-		//  - The "SimpleShader" class handles all of that for you.
-		vertexShader->SetMatrix4x4("world", Entities[i].GetWorld());
-		vertexShader->SetMatrix4x4("view", viewMatrix);
-		vertexShader->SetMatrix4x4("projection", projectionMatrix);
+		Entities[i].PrepareMaterial(Cam.GetViewMat(), Cam.GetProjMat());
+		
+		
+		//pixelShader->SetData(			"topLight",			&DirLight,			sizeof(DirectionalLight)		);
 
-		// Once you've set all of the data you care to change for
-		// the next draw call, you need to actually send it to the GPU
-		//  - If you skip this, the "SetMatrix" calls above won't make it to the GPU!
-		vertexShader->CopyAllBufferData();
-
-		// Set the vertex and pixel shaders to use for the next Draw() command
-		//  - These don't technically need to be set every frame...YET
-		//  - Once you start applying different shaders to different objects,
-		//    you'll need to swap the current shaders before each draw
-		vertexShader->SetShader();
-		pixelShader->SetShader();
+		pixelShader->SetData(			"light",			&TopLight,			sizeof(DirectionalLight)		);
 
 		// Set buffers in the input assembler
 		//  - Do this ONCE PER OBJECT you're drawing, since each object might
@@ -352,11 +264,31 @@ void Game::OnMouseUp(WPARAM buttonState, int x, int y)
 // --------------------------------------------------------
 void Game::OnMouseMove(WPARAM buttonState, int x, int y)
 {
+	
 	// Add any custom code here...
-
+	//Cam.Rotate(x - prevMousePos.x, y - prevMousePos.y);
 	// Save the previous mouse position, so we have it for the future
+	
 	prevMousePos.x = x;
 	prevMousePos.y = y;
+	
+	//Attempting to recenter the mouse like in previous versions, but the way I am currently passing information about makes it lock
+	//In previous iterations, the mouse position was captured, transformations applied, and then the mouse was reset to center
+	//Here, the mouse pos being moved back to center IS a mouseMove, meaning the rotation gets called again as the mouse moves back by -n units the direction it just traveled.  
+
+	/*
+	float fSens = .001f;
+	float yRot = fSens * (x - width * .5f);
+	float xRot = fSens * (y - height * .5f);
+	Cam.Rotate(xRot, yRot);
+	SetCursorPos(width / 2.f, height / 2.f);
+	*/
+
+	//So, currently, I'm just passing in the screen size to the camera waaaay too often, its on my TODO I swear
+	//And just ripping the data out manually even when I don't need it.
+	//I know, its trash. But things were getting all.... stuck-like.
+	//This is my third (fourth) major engine (re)build, and I have yet to make a camera I actually like.
+	//So that's on my TODO too. 
 }
 
 // --------------------------------------------------------

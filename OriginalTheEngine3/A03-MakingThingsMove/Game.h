@@ -4,6 +4,8 @@
 #include "SimpleShader.h"
 #include <DirectXMath.h>
 #include "Entity.h"
+#include "Camera.h"
+#include "Light.h"
 
 class Game 
 	: public DXCore
@@ -46,8 +48,17 @@ private:
 	POINT prevMousePos;
 	
 	std::vector<Entity> Entities;
-	Mesh* Triangle;
-	Mesh* Square;
-	Mesh* Octogon;
+	
+	Mesh* Hexlis;
+	Mesh* Sphere;
+	Mesh* Torus;
+	
+	Material* baseMat;
+
+	Camera Cam;
+
+	DirectionalLight DirLight;
+	DirectionalLight TopLight;
+
 };
 

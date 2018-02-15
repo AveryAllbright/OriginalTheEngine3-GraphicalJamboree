@@ -1,0 +1,15 @@
+﻿  compilation object save succeeded; see M:\School\GGP\OtE3\OriginalTheEngine3\x64\Release\PixelShader.cso
+  compilation object save succeeded; see M:\School\GGP\OtE3\OriginalTheEngine3\x64\Release\VertexShader.cso
+  Camera.cpp
+Camera.cpp(75): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  DXCore.cpp
+  Entity.cpp
+  Game.cpp
+  Main.cpp
+  Material.cpp
+  Mesh.cpp
+  SimpleShader.cpp
+  Generating code
+  All 1798 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  A03-MakingThingsMove.vcxproj -> M:\School\GGP\OtE3\OriginalTheEngine3\x64\Release\A03-MakingThingsMove.exe

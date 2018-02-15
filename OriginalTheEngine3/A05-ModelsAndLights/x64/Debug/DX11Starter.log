@@ -1,0 +1,10 @@
+﻿  Game.cpp
+m:\school\ggp\originaltheengine3 - graphical jamboree\dx11starter\game.cpp(170): warning C4305: 'argument': truncation from 'double' to 'float'
+m:\school\ggp\originaltheengine3 - graphical jamboree\dx11starter\game.cpp(173): warning C4305: 'argument': truncation from 'double' to 'float'
+m:\school\ggp\originaltheengine3 - graphical jamboree\dx11starter\game.cpp(176): warning C4305: 'argument': truncation from 'double' to 'float'
+m:\school\ggp\originaltheengine3 - graphical jamboree\dx11starter\game.cpp(179): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
+  Compiling...
+  Main.cpp
+  Generating Code...
+  DX11Starter.vcxproj -> M:\School\GGP\OriginalTheEngine3 - Graphical Jamboree\x64\Debug\DX11Starter.exe
