@@ -16,6 +16,8 @@ private:
 	float m_fYRot = 0.f;
 	float deltX;
 	float deltY;
+	int trueHeight;
+	int trueWidth;
 
 public:
 	Camera();

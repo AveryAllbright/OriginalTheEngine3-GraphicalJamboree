@@ -1,3 +1,9 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (A01-Mesh.vcxproj, DX11Starter.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Camera.cpp
+  Generating Code...
+  Compiling...
+  Main.cpp
   Game.cpp
-  A03-MakingThingsMove.vcxproj -> D:\Profiles\cdb6474\Documents\OtE3\OriginalTheEngine3\x64\Debug\A03-MakingThingsMove.exe
+d:\profiles\cdb6474\documents\ote3\originaltheengine3\a03-makingthingsmove\game.cpp(22): error C2512: 'Camera': no appropriate default constructor available
+  d:\profiles\cdb6474\documents\ote3\originaltheengine3\a03-makingthingsmove\camera.h(5): note: see declaration of 'Camera'
+  Generating Code...

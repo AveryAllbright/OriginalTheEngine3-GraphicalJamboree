@@ -66,13 +66,16 @@ void Camera::Rotate(float a_fX, float a_fY, unsigned int width, unsigned int hei
 	if (a_fY < 0) { m_fXRot -= .003f; }
 	*/
 
+	int trueWidth = width;
+	int trueHeight = height;
+
 	//Approach B: Inhouse (expensive) pull
 	POINT cursor;
 	GetCursorPos(&cursor);
-	m_fYRot += .0003f * (int)(cursor.x - width * .5f);
-	m_fXRot += .0003f * (int)(cursor.y - height * .5f);
+	m_fYRot += .0003f * (cursor.x - trueWidth);
+	m_fXRot += .0003f * (cursor.y - trueHeight);
 
-	SetCursorPos(width * .5f, height * .5f);
+	SetCursorPos(trueWidth, trueHeight);
 
 	
 	//This sort of works. Kind of. It works enough. Whatever, you can zip around the screen and look at my octogons, isn't that all that really matters?

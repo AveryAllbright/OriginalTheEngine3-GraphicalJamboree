@@ -20,6 +20,8 @@ Game::Game(HINSTANCE hInstance)
 		1080,			   // Height of the window's client area
 		true)			   // Show extra stats (fps) in title bar?
 {
+
+	
 	// Initialize fields
 	vertexShader = 0;
 	pixelShader = 0;
@@ -167,7 +169,7 @@ void Game::Update(float deltaTime, float totalTime)
 
 
 	Cam.Update(deltaTime);
-	Cam.Rotate(0, 0, width, height);
+	Cam.Rotate(0, 0, width / 2, height / 2);
 }
 
 // --------------------------------------------------------
