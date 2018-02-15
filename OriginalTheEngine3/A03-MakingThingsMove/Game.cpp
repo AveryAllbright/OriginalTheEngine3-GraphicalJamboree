@@ -63,7 +63,7 @@ void Game::Init()
 	CreateBasicGeometry();
 
 	DirLight.AmbientColour = XMFLOAT4(.1f, .1f, .1f, 1.f);
-	DirLight.DiffuseColour = XMFLOAT4(0.f, 0.1f, 0.1f, 1.f);
+	DirLight.DiffuseColour = XMFLOAT4(1.f, 0.1f, 0.1f, 1.f);
 	DirLight.Direction = XMFLOAT3(1.f, -1.f, 0.f);
 
 	TopLight.AmbientColour = XMFLOAT4(.1f, .1f, .1f, .1f);
@@ -196,9 +196,11 @@ void Game::Draw(float deltaTime, float totalTime)
 		Entities[i].PrepareMaterial(Cam.GetViewMat(), Cam.GetProjMat());
 		
 		
-		//pixelShader->SetData(			"topLight",			&DirLight,			sizeof(DirectionalLight)		);
+		bool test = pixelShader->SetData(			"topLight",			&TopLight,			sizeof(DirectionalLight)		);
 
-		pixelShader->SetData(			"light",			&TopLight,			sizeof(DirectionalLight)		);
+		bool other = pixelShader->SetData(			"light",			&DirLight,			sizeof(DirectionalLight)		);
+
+		pixelShader->CopyAllBufferData();
 
 		// Set buffers in the input assembler
 		//  - Do this ONCE PER OBJECT you're drawing, since each object might

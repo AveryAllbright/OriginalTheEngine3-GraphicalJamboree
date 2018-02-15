@@ -45,13 +45,13 @@ float4 main(VertexToPixel input) : SV_TARGET
 	float3 toLight = normalize(light.Direction);
 	float NdotL = dot(input.normal, -toLight);
 	NdotL = saturate(NdotL);
-
+	
 	float3 toTop = normalize(topLight.Direction);
 	float NdotLTop = dot(input.normal, -toLight);
 	NdotLTop = saturate(NdotLTop);
-
-
+	
+	//TODO : Lighting Helper
 
 	return (light.AmbientColour + (light.DiffuseColour * NdotL)) + (topLight.AmbientColour + (topLight.DiffuseColour * NdotLTop));
-	//return float4 (light.DiffuseColour.x, 1,0,1);
+	//return float4 (light.DiffuseColour.x, 0,0,1);
 }
